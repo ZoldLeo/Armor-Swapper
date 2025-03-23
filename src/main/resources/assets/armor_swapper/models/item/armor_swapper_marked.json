@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "armor_swapper:item/armor_swapper",
+        "layer1": "armor_swapper:item/armor_swapper_overlay"
+    }
+}
