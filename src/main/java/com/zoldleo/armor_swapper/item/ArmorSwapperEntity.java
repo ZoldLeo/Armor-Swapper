@@ -1,5 +1,7 @@
 package com.zoldleo.armor_swapper.item;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -57,7 +59,7 @@ public class ArmorSwapperEntity extends ItemEntity {
 	}
 
 	@Override
-	public boolean isInvulnerableTo(DamageSource source) {
+	public boolean isInvulnerableTo(@Nonnull DamageSource source) {
 		return true;
 	}
 

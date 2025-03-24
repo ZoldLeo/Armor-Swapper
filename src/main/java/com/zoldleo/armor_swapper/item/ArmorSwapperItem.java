@@ -2,13 +2,13 @@ package com.zoldleo.armor_swapper.item;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.zoldleo.armor_swapper.gui.SwapperOptionsScreen;
 import com.zoldleo.armor_swapper.init.EntityInit;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -29,6 +30,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -42,7 +44,7 @@ public class ArmorSwapperItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (hand != InteractionHand.MAIN_HAND) {
             return InteractionResultHolder.fail(stack);
@@ -60,23 +62,38 @@ public class ArmorSwapperItem extends Item {
 
         ArmorSwapperInventory inventory = getInventory(stack);
         if (!inventory.getFlag("DontStoreArmor")) {
-            ItemStack headItem = inventory.getItem(0).copy();
-            ItemStack chestItem = inventory.getItem(1).copy();
-            ItemStack legsItem = inventory.getItem(2).copy();
-            ItemStack feetItem = inventory.getItem(3).copy();
-            inventory.setItem(0, player.getItemBySlot(EquipmentSlot.HEAD));
-            inventory.setItem(1, player.getItemBySlot(EquipmentSlot.CHEST));
-            inventory.setItem(2, player.getItemBySlot(EquipmentSlot.LEGS));
-            inventory.setItem(3, player.getItemBySlot(EquipmentSlot.FEET));
-            player.setItemSlot(EquipmentSlot.HEAD, headItem);
-            player.setItemSlot(EquipmentSlot.CHEST, chestItem);
-            player.setItemSlot(EquipmentSlot.LEGS, legsItem);
-            player.setItemSlot(EquipmentSlot.FEET, feetItem);
+            ItemStack playerHead = player.getItemBySlot(EquipmentSlot.HEAD);
+            if (canSwap(player, playerHead)) {
+                ItemStack headItem = inventory.getItem(0).copy();
+                inventory.setItem(0, playerHead);
+                player.setItemSlot(EquipmentSlot.HEAD, headItem);
+            }
+            ItemStack playerChest = player.getItemBySlot(EquipmentSlot.CHEST);
+            if (canSwap(player, playerChest)) {
+                ItemStack chestItem = inventory.getItem(1).copy();
+                inventory.setItem(1, playerChest);
+                player.setItemSlot(EquipmentSlot.CHEST, chestItem);
+            }
+            ItemStack playerLegs = player.getItemBySlot(EquipmentSlot.LEGS);
+            if (canSwap(player, playerLegs)) {
+                ItemStack legsItem = inventory.getItem(2).copy();
+                inventory.setItem(2, playerLegs);
+                player.setItemSlot(EquipmentSlot.LEGS, legsItem);
+            }
+            ItemStack playerFeet = player.getItemBySlot(EquipmentSlot.FEET);
+            if (canSwap(player, playerFeet)) {
+                ItemStack feetItem = inventory.getItem(3).copy();
+                inventory.setItem(3, playerFeet);
+                player.setItemSlot(EquipmentSlot.FEET, feetItem);
+            }
         }
         if (!inventory.getFlag("DontStoreOffhand")) {
-            ItemStack offhandItem = inventory.getItem(4).copy();
-            inventory.setItem(4, player.getItemBySlot(EquipmentSlot.OFFHAND));
-            player.setItemSlot(EquipmentSlot.OFFHAND, offhandItem);
+            ItemStack playerOffhand = player.getItemBySlot(EquipmentSlot.OFFHAND);
+            if (canSwap(player, playerOffhand)) {
+                ItemStack offhandItem = inventory.getItem(4).copy();
+                inventory.setItem(4, playerOffhand);
+                player.setItemSlot(EquipmentSlot.OFFHAND, offhandItem);
+            }
         }
         if (haveCuriosMod && !inventory.getFlag("DontStoreCurios")) {
             CompoundTag tag = stack.getOrCreateTag().copy();
@@ -85,8 +102,12 @@ public class ArmorSwapperItem extends Item {
         }
 
         saveInventory(inventory);
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.ARMOR_EQUIP_LEATHER, 1.0F));
+        player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1, 1);
 	}
+
+    private boolean canSwap(ServerPlayer player, ItemStack stack) {
+        return player.isCreative() || !EnchantmentHelper.hasBindingCurse(stack);
+    }
 
 	public ArmorSwapperInventory getInventory(ItemStack stack) {
 		return new ArmorSwapperInventory(stack, 5);
@@ -99,7 +120,7 @@ public class ArmorSwapperItem extends Item {
     }
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
 		super.appendHoverText(stack, level, tooltip, flag);
         Container inventory = getInventory(stack);
         for (int i = 0; i < 5; i++) {
@@ -124,7 +145,7 @@ public class ArmorSwapperItem extends Item {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
+    public void fillItemCategory(@Nonnull CreativeModeTab tab, @Nonnull NonNullList<ItemStack> items) {
         if (allowdedIn(tab)) {
             for (DyeColor color : DyeColor.values()) {
                 ItemStack stack = new ItemStack(this);

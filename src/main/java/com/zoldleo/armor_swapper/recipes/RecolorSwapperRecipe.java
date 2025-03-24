@@ -19,6 +19,8 @@ import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class RecolorSwapperRecipe extends ShapelessRecipe {
@@ -32,7 +34,7 @@ public class RecolorSwapperRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inventory) {
+    public ItemStack assemble(@Nonnull CraftingContainer inventory) {
         ItemStack swapper = ItemStack.EMPTY;
         ItemStack dye = ItemStack.EMPTY;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
@@ -67,7 +69,7 @@ public class RecolorSwapperRecipe extends ShapelessRecipe {
         public static final ResourceLocation ID = RecolorSwapperRecipe.NAME;
 
         @Override
-        public RecolorSwapperRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public RecolorSwapperRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
             NonNullList<Ingredient> list = NonNullList.create();
 
             List<ItemStack> swapperIng = new ArrayList<>();
@@ -88,7 +90,7 @@ public class RecolorSwapperRecipe extends ShapelessRecipe {
         }
         
         @Override
-        public RecolorSwapperRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public RecolorSwapperRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
             NonNullList<Ingredient> list = NonNullList.create();
 
             List<ItemStack> swapperIng = new ArrayList<>();
@@ -110,7 +112,7 @@ public class RecolorSwapperRecipe extends ShapelessRecipe {
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, RecolorSwapperRecipe recipe) {
+        public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RecolorSwapperRecipe recipe) {
             ItemStack stack = recipe.getResultItem();
             buffer.writeInt(stack.getOrCreateTag().getInt("SwapperColor"));
         }

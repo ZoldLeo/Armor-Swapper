@@ -6,6 +6,8 @@ package com.zoldleo.armor_swapper.datagen;
 //import java.util.Set;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 import com.zoldleo.armor_swapper.init.RecipeInit;
 import com.zoldleo.armor_swapper.recipes.RecolorSwapperRecipe;
 
@@ -61,7 +63,7 @@ public class DyedRecipeBuilder  {
         }
 
         @Override
-        public void serializeRecipeData(JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.addProperty("color", color.getId());
         }
 

@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CraftSwapperRecipe extends ShapedRecipe {
@@ -26,7 +27,7 @@ public class CraftSwapperRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inventory) {
+    public ItemStack assemble(@Nonnull CraftingContainer inventory) {
         ItemStack result = super.assemble(inventory);
         return result;
     }
@@ -41,7 +42,7 @@ public class CraftSwapperRecipe extends ShapedRecipe {
         public static final ResourceLocation ID = CraftSwapperRecipe.NAME;
 
         @Override
-        public CraftSwapperRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public CraftSwapperRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
             ItemStack stack = new ItemStack(ItemInit.ARMOR_SWAPPER.get());
             stack.getOrCreateTag().putInt(ArmorSwapperItem.NBT_COLOR, DyeColor.WHITE.getId());
             NonNullList<Ingredient> list = NonNullList.create();
@@ -58,7 +59,7 @@ public class CraftSwapperRecipe extends ShapedRecipe {
         }
         
         @Override
-        public CraftSwapperRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public CraftSwapperRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
             ItemStack stack = new ItemStack(ItemInit.ARMOR_SWAPPER.get());
             stack.getOrCreateTag().putInt(ArmorSwapperItem.NBT_COLOR, DyeColor.WHITE.getId());
             NonNullList<Ingredient> list = NonNullList.create();
@@ -75,7 +76,7 @@ public class CraftSwapperRecipe extends ShapedRecipe {
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, CraftSwapperRecipe recipe) {
+        public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull CraftSwapperRecipe recipe) {
         }
 
         @Override

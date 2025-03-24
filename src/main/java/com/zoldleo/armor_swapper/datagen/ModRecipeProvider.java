@@ -11,6 +11,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 import com.zoldleo.armor_swapper.ArmorSwapperMod;
 import com.zoldleo.armor_swapper.recipes.RecolorSwapperRecipe;
 
@@ -20,7 +22,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
 	@Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
         for (DyeColor color : DyeColor.values()) {
             NonNullList<Ingredient> list = NonNullList.create();
             RecolorSwapperRecipe recipe = new RecolorSwapperRecipe(new ResourceLocation(ArmorSwapperMod.MOD_ID, "recolor_armor_swapper_" + color.toString()), ArmorSwapperMod.MOD_ID + ".item.color", ItemStack.EMPTY, list, color.getId());

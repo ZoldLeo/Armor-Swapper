@@ -1,5 +1,7 @@
 package com.zoldleo.armor_swapper.gui;
 
+import javax.annotation.Nonnull;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zoldleo.armor_swapper.item.ArmorSwapperInventory;
@@ -76,19 +78,19 @@ public class SwapperOptionsScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(poseStack);
         drawCenteredString(poseStack, font, I18n.get("Armor Swapper Settings"), width/2, height/2-96, 0xffffff);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 	}
 
-    //@SuppressWarnings("null")
+    @SuppressWarnings("null")
     @Override
     public boolean keyPressed(int p_97765_, int p_97766_, int p_97767_) {
         InputConstants.Key mouseKey = InputConstants.getKey(p_97765_, p_97766_);
         if (super.keyPressed(p_97765_, p_97766_, p_97767_)) {
             return true;
-        } else if (this.minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
+        } else if (minecraft != null && minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
             this.onClose();
             return true;
         }
